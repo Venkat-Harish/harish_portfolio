@@ -1,0 +1,19 @@
+# Dependencies
+node_modules/
+
+# Next.js build output
+.next/
+out/
+
+# Production build
+build/
+dist/
+
+# Misc
+.DS_Store
+*.log
+.env
+.env.local
+
+# Temp/Typo folders (based on your file list)
+{pages/
