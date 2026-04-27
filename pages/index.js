@@ -7,7 +7,7 @@ import { profile, companies, projects, skills, certifications } from '../data'
 function calcDuration(startDate, endDate) {
   const start = new Date(startDate)
   const end = endDate ? new Date(endDate) : new Date()
-  let months = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth())
+  let months = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth() + 1)
   if (months < 1) months = 1
   const years = Math.ceil(months / 12)
   const rem = months % 12
