@@ -68,16 +68,28 @@ function ProjectModal({ project, companyColor, onClose }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"
-      style={{ background: 'var(--modal-bg)', backdropFilter: 'blur(8px)' }}
+      style={{ background: 'rgba(0,0,0,0.35)', backdropFilter: 'blur(16px) saturate(180%)', WebkitBackdropFilter: 'blur(16px) saturate(180%)' }}
       onClick={onClose}>
       <div
         className="relative w-full sm:max-w-xl rounded-t-2xl sm:rounded-2xl shadow-2xl max-h-[90vh] overflow-y-auto slide-up"
-        style={{ background: 'var(--surface)', border: '1px solid var(--border2)', borderTop: `3px solid ${companyColor || 'var(--accent)'}` }}
+        style={{
+          background: 'color-mix(in srgb, var(--surface) 62%, transparent)',
+          backdropFilter: 'blur(36px) saturate(200%) brightness(1.08)',
+          WebkitBackdropFilter: 'blur(36px) saturate(200%) brightness(1.08)',
+          border: '1px solid color-mix(in srgb, var(--border2) 55%, transparent)',
+          borderTop: `3px solid ${companyColor || 'var(--accent)'}`,
+          boxShadow: '0 8px 48px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.07)',
+        }}
         onClick={e => e.stopPropagation()}>
 
         {/* Sticky header */}
         <div className="sticky top-0 z-10 flex items-start justify-between px-5 pt-5 pb-3"
-          style={{ background: 'var(--surface)', borderBottom: '1px solid var(--border)' }}>
+          style={{
+            background: 'color-mix(in srgb, var(--surface) 55%, transparent)',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+            borderBottom: '1px solid color-mix(in srgb, var(--border) 45%, transparent)',
+          }}>
           <div className="flex-1 pr-8">
             <div className="flex flex-wrap gap-1.5 mb-2">
               {project.chips.map(c => <Chip key={c} label={c} />)}
@@ -148,7 +160,7 @@ function ProjectModal({ project, companyColor, onClose }) {
 function ProjectRow({ project, companyColor, onOpen }) {
   return (
     <button
-      className="group w-full flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 px-3 py-3 rounded-lg text-left transition-all"
+      className="group hover-lift w-full flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 px-3 py-3 rounded-lg text-left transition-all"
       onMouseEnter={e => e.currentTarget.style.background = 'var(--surface2)'}
       onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
       onClick={() => onOpen(project)}>
@@ -397,10 +409,17 @@ function ContactPopup({ onClose }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"
-      style={{ background: 'var(--modal-bg)', backdropFilter: 'blur(8px)' }}
+      style={{ background: 'rgba(0,0,0,0.35)', backdropFilter: 'blur(16px) saturate(180%)', WebkitBackdropFilter: 'blur(16px) saturate(180%)' }}
       onClick={onClose}>
       <div className="relative w-full sm:max-w-sm rounded-t-2xl sm:rounded-2xl p-6 shadow-2xl slide-up"
-        style={{ background: 'var(--surface)', border: '1px solid var(--border2)', borderTop: '3px solid var(--accent)' }}
+        style={{
+          background: 'color-mix(in srgb, var(--surface) 62%, transparent)',
+          backdropFilter: 'blur(36px) saturate(200%) brightness(1.08)',
+          WebkitBackdropFilter: 'blur(36px) saturate(200%) brightness(1.08)',
+          border: '1px solid color-mix(in srgb, var(--border2) 55%, transparent)',
+          borderTop: '3px solid var(--accent)',
+          boxShadow: '0 8px 48px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.07)',
+        }}
         onClick={e => e.stopPropagation()}>
         <button onClick={onClose} className="absolute top-4 right-4 w-7 h-7 flex items-center justify-center rounded-full"
           style={{ background: 'var(--surface2)', color: 'var(--text2)' }}>×</button>
@@ -529,7 +548,7 @@ export default function Home() {
                   { href: profile.leetcode, label: 'LeetCode', icon: <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M13.483 0a1.374 1.374 0 0 0-.961.438L7.116 6.226l-3.854 4.126a5.266 5.266 0 0 0-1.209 2.104 5.35 5.35 0 0 0-.125.513 5.527 5.527 0 0 0 .062 2.362 5.83 5.83 0 0 0 .349 1.017 5.938 5.938 0 0 0 1.271 1.818l4.277 4.193.039.038c2.248 2.165 5.852 2.133 8.063-.074l2.396-2.392c.54-.54.54-1.414.003-1.955a1.378 1.378 0 0 0-1.951-.003l-2.396 2.392a3.021 3.021 0 0 1-4.205.038l-.02-.019-4.276-4.193c-.652-.64-.972-1.469-.948-2.263a2.68 2.68 0 0 1 .066-.523 2.545 2.545 0 0 1 .619-1.164L9.13 8.114c1.058-1.134 3.204-1.27 4.43-.278l3.501 2.831c.593.48 1.461.387 1.94-.207a1.384 1.384 0 0 0-.207-1.943l-3.5-2.831c-.8-.647-1.766-1.045-2.774-1.202l2.015-2.158A1.384 1.384 0 0 0 13.483 0zm-2.866 12.815a1.38 1.38 0 0 0-1.38 1.382 1.38 1.38 0 0 0 1.38 1.382H20.79a1.38 1.38 0 0 0 1.38-1.382 1.38 1.38 0 0 0-1.38-1.382z"/></svg> },
                 ].map(l => (
                   <a key={l.label} href={l.href} target="_blank" rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 font-mono text-xs px-3 py-2 rounded-lg transition-all"
+                    className="hover-lift flex items-center gap-1.5 font-mono text-xs px-3 py-2 rounded-lg transition-all"
                     style={{ border: '1px solid var(--border2)', color: 'var(--text2)', background: 'var(--surface)' }}
                     onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--accent)'; e.currentTarget.style.color = 'var(--accent)' }}
                     onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border2)'; e.currentTarget.style.color = 'var(--text2)' }}>
@@ -537,7 +556,7 @@ export default function Home() {
                   </a>
                 ))}
                 <button onClick={() => setContactOpen(true)}
-                  className="flex items-center gap-1.5 font-mono text-xs px-4 py-2 rounded-lg font-semibold transition-all"
+                  className="hover-lift flex items-center gap-1.5 font-mono text-xs px-4 py-2 rounded-lg font-semibold transition-all"
                   style={{ background: 'var(--accent)', color: '#fff' }}
                   onMouseEnter={e => e.currentTarget.style.background = 'var(--accent-hover)'}
                   onMouseLeave={e => e.currentTarget.style.background = 'var(--accent)'}>
@@ -576,20 +595,18 @@ export default function Home() {
                 companyProjects={projects.filter(p => p.companyId === company.id)}
               />
             ))}
-
-            {/* Education sub-section */}
-            <div className="flex items-center gap-3 mt-3 mb-1">
-              <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: 'var(--accent)' }} />
-              <span className="font-mono text-[10px] tracking-widest" style={{ color: 'var(--text3)' }}>EDUCATION</span>
-              <div className="flex-1 h-px" style={{ background: 'var(--border)' }} />
-            </div>
-            <EducationCard />
           </div>
+        </section>
+
+        {/* ── Education ───────────────────────────────── */}
+        <section id="education" className="max-w-5xl mx-auto px-4 sm:px-6 pb-14 sm:pb-20">
+          <SectionHeader index="02" title="Education" />
+          <EducationCard />
         </section>
 
         {/* ── Personal Projects ────────────────────────── */}
         <section id="projects" className="max-w-5xl mx-auto px-4 sm:px-6 pb-14 sm:pb-20">
-          <SectionHeader index="02" title="Personal Projects" />
+          <SectionHeader index="03" title="Personal Projects" />
           <p className="font-mono text-[10px] mb-4" style={{ color: 'var(--text3)' }}>
             Click to expand features & full pipeline
           </p>
@@ -600,7 +617,7 @@ export default function Home() {
 
         {/* ── Skills ───────────────────────────────────── */}
         <section id="skills" className="max-w-5xl mx-auto px-4 sm:px-6 pb-14 sm:pb-20">
-          <SectionHeader index="03" title="Skills" />
+          <SectionHeader index="04" title="Skills" />
           {(() => {
             const featured = new Set(['LLMs', 'RAG', 'AI Agents', 'MCP', 'PyTorch', 'Transformers', 'LangChain', 'Computer Vision', 'NLP', 'FAISS', 'NumPy', 'Pandas', 'OpenCV', 'Deep Learning', 'Machine Learning'])
             return (
@@ -616,7 +633,7 @@ export default function Home() {
                         const isFeatured = featured.has(skill)
                         return (
                           <span key={skill}
-                            className="font-mono text-[10px] px-2 py-0.5 rounded-md transition-all cursor-default"
+                            className="hover-lift font-mono text-[10px] px-2 py-0.5 rounded-md transition-all cursor-default"
                             style={isFeatured
                               ? { background: 'var(--accent-glow)', color: 'var(--accent)', border: '1px solid color-mix(in srgb, var(--accent) 40%, transparent)', fontWeight: 600 }
                               : { background: 'var(--surface2)', color: 'var(--text2)', border: '1px solid var(--border)' }}
@@ -642,7 +659,7 @@ export default function Home() {
 
         {/* ── Certifications ───────────────────────────── */}
         <section className="max-w-5xl mx-auto px-4 sm:px-6 pb-14 sm:pb-20">
-          <SectionHeader index="04" title="Certifications" />
+          <SectionHeader index="05" title="Certifications" />
           <div className="flex flex-col sm:flex-row gap-3">
             {certifications.map((cert, i) => {
               const inner = (
@@ -660,14 +677,14 @@ export default function Home() {
               )
               return cert.link ? (
                 <a key={i} href={cert.link} target="_blank" rel="noopener noreferrer"
-                  className="rounded-xl p-4 flex-1 transition-all"
+                  className="hover-lift rounded-xl p-4 flex-1 transition-all"
                   style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}
                   onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--accent)'}
                   onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border)'}>
                   {inner}
                 </a>
               ) : (
-                <div key={i} className="rounded-xl p-4 flex-1"
+                <div key={i} className="hover-lift rounded-xl p-4 flex-1"
                   style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}>
                   {inner}
                 </div>

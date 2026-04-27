@@ -43,6 +43,7 @@ export default function Navbar({ onContactClick }) {
 
   const links = [
     { href: '#experience', label: 'Experience' },
+    { href: '#education', label: 'Education' },
     { href: '#projects', label: 'Projects' },
     { href: '#skills', label: 'Skills' },
   ]
