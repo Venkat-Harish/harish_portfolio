@@ -6,12 +6,12 @@ export const profile = {
     { label: "Academic", address: "gh.ug20.cse@nitp.ac.in" }
   ],
   phone: "+91-9344394424",
-  linkedin: "https://www.linkedin.com/in/venkatharishga/",
+  linkedin: "https://www.linkedin.com/in/venkat-harish-g/",
   github: "https://github.com/venkatharishga",
-  leetcode: "https://leetcode.com/venkatharishga/",
+  leetcode: "https://leetcode.com/u/RetryUntilPass/",
   avatar: "/images/avatar.jpg",
   summary: "AI Engineer building production ML systems — text-to-SQL pipelines, RAG document assistants, knowledge graphs, and computer vision at scale.",
-  openToOpportunities: true,
+  openToOpportunities: false,
   education: {
     institute: "National Institute of Technology (NIT) Patna",
     degree: "B.Tech in Computer Science and Engineering",

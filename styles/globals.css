@@ -118,3 +118,10 @@ body {
 .hover-lift:hover {
   transform: translateY(-2px);
 }
+
+.img-zoom {
+  transition: transform 0.25s ease;
+}
+.img-zoom:hover {
+  transform: scale(1.06);
+}

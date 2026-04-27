@@ -97,7 +97,7 @@ function ProjectModal({ project, companyColor, onClose }) {
             <h3 className="font-mono text-sm font-semibold" style={{ color: 'var(--text)' }}>{project.title}</h3>
           </div>
           <button onClick={onClose}
-            className="flex-shrink-0 w-7 h-7 flex items-center justify-center rounded-full text-base"
+            className="hover-lift flex-shrink-0 w-7 h-7 flex items-center justify-center rounded-full text-base"
             style={{ background: 'var(--surface2)', color: 'var(--text2)' }}>×</button>
         </div>
 
@@ -124,21 +124,21 @@ function ProjectModal({ project, companyColor, onClose }) {
           <div className="flex flex-wrap gap-2">
             {project.github && (
               <a href={project.github} target="_blank" rel="noopener noreferrer"
-                className="flex items-center gap-1.5 font-mono text-xs px-3 py-1.5 rounded-lg"
+                className="hover-lift flex items-center gap-1.5 font-mono text-xs px-3 py-1.5 rounded-lg"
                 style={{ border: '1px solid var(--border2)', color: 'var(--text2)' }}>
                 <GithubIcon /> GitHub
               </a>
             )}
             {project.liveUrl && (
               <a href={project.liveUrl} target="_blank" rel="noopener noreferrer"
-                className="flex items-center gap-1.5 font-mono text-xs px-3 py-1.5 rounded-lg"
+                className="hover-lift flex items-center gap-1.5 font-mono text-xs px-3 py-1.5 rounded-lg"
                 style={{ border: '1px solid var(--accent)', color: 'var(--accent)', background: 'var(--accent-glow)' }}>
                 <ExternalIcon /> Live Demo
               </a>
             )}
             {project.demoUrl && (
               <a href={project.demoUrl} target="_blank" rel="noopener noreferrer"
-                className="flex items-center gap-1.5 font-mono text-xs px-3 py-1.5 rounded-lg"
+                className="hover-lift flex items-center gap-1.5 font-mono text-xs px-3 py-1.5 rounded-lg"
                 style={{ border: '1px solid var(--highlight)', color: 'var(--highlight)', background: 'var(--highlight-bg)' }}>
                 ▶ Watch Demo
               </a>
@@ -190,7 +190,7 @@ function ExperienceAccordion({ company, companyProjects }) {
       {modalProject && (
         <ProjectModal project={modalProject} companyColor={company.color} onClose={() => setModalProject(null)} />
       )}
-      <div className="rounded-xl overflow-hidden transition-all duration-300"
+      <div className="hover-lift rounded-xl overflow-hidden transition-all duration-300"
         style={{
           border: `1px solid ${open ? company.color + '55' : 'var(--border)'}`,
           boxShadow: open ? `0 4px 24px ${company.color}12` : 'none'
@@ -202,7 +202,7 @@ function ExperienceAccordion({ company, companyProjects }) {
 
           <div className="relative w-11 h-11 flex-shrink-0 rounded-xl overflow-hidden flex items-center justify-center p-1.5"
             style={{ background: ['tcs','mercedes'].includes(company.id) ? '#fff' : 'var(--surface2)', border: '1px solid var(--border)' }}>
-            <img src={company.logo} alt={company.name} className="w-full h-full object-contain"
+            <img src={company.logo} alt={company.name} className="img-zoom w-full h-full object-contain"
               onError={e => e.target.style.display = 'none'} />
           </div>
 
@@ -253,7 +253,7 @@ function EducationCard() {
   const edu = profile.education
 
   return (
-    <div className="rounded-xl overflow-hidden transition-all duration-300"
+    <div className="hover-lift rounded-xl overflow-hidden transition-all duration-300"
       style={{
         border: `1px solid ${open ? 'var(--accent)' : 'var(--border)'}`,
         boxShadow: open ? '0 4px 24px var(--accent-glow)' : 'none'
@@ -265,7 +265,7 @@ function EducationCard() {
 
         <div className="w-11 h-11 flex-shrink-0 rounded-xl overflow-hidden flex items-center justify-center p-1.5 bg-white"
           style={{ border: '1px solid var(--border)' }}>
-          <img src={edu.logo} alt="NIT Patna" className="w-full h-full object-contain" />
+          <img src={edu.logo} alt="NIT Patna" className="img-zoom w-full h-full object-contain" />
         </div>
 
         <div className="flex-1 min-w-0">
@@ -298,7 +298,7 @@ function EducationCard() {
         <div className="px-4 py-4 slide-down" style={{ borderTop: '1px solid var(--border)', background: 'var(--bg2)' }}>
           <div className="grid sm:grid-cols-2 gap-2">
             {edu.highlights.map((h, i) => (
-              <div key={i} className="flex gap-3 items-start p-3 rounded-xl transition-all"
+              <div key={i} className="hover-lift flex gap-3 items-start p-3 rounded-xl transition-all"
                 style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}>
                 <div className="flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center text-base"
                   style={{ background: 'var(--surface2)', border: '1px solid var(--border)' }}>
@@ -309,7 +309,7 @@ function EducationCard() {
                   <div className="text-[11px] leading-relaxed mb-1.5" style={{ color: 'var(--text2)' }}>{h.detail}</div>
                   {h.proofUrl && (
                     <a href={h.proofUrl} target="_blank" rel="noopener noreferrer"
-                      className="font-mono text-[9px] px-2 py-0.5 rounded inline-flex items-center gap-1"
+                      className="hover-lift font-mono text-[9px] px-2 py-0.5 rounded inline-flex items-center gap-1"
                       style={{ border: '1px solid var(--accent)', color: 'var(--accent)', background: 'var(--accent-glow)' }}>
                       <ExternalIcon size={8} /> View Proof
                     </a>
@@ -329,7 +329,7 @@ function PersonalCard({ project }) {
   const [expanded, setExpanded] = useState(false)
 
   return (
-    <div className="rounded-xl overflow-hidden transition-all duration-300"
+    <div className="hover-lift rounded-xl overflow-hidden transition-all duration-300"
       style={{ border: `1px solid ${expanded ? 'var(--border2)' : 'var(--border)'}`, background: 'var(--surface)' }}>
       <button
         className="w-full flex items-start sm:items-center gap-3 p-4 text-left transition-all"
@@ -372,21 +372,21 @@ function PersonalCard({ project }) {
           <div className="flex flex-wrap gap-2">
             {project.github && (
               <a href={project.github} target="_blank" rel="noopener noreferrer"
-                className="flex items-center gap-1.5 font-mono text-xs px-3 py-1.5 rounded-lg"
+                className="hover-lift flex items-center gap-1.5 font-mono text-xs px-3 py-1.5 rounded-lg"
                 style={{ border: '1px solid var(--border2)', color: 'var(--text2)' }}>
                 <GithubIcon /> GitHub
               </a>
             )}
             {project.liveUrl && (
               <a href={project.liveUrl} target="_blank" rel="noopener noreferrer"
-                className="flex items-center gap-1.5 font-mono text-xs px-3 py-1.5 rounded-lg"
+                className="hover-lift flex items-center gap-1.5 font-mono text-xs px-3 py-1.5 rounded-lg"
                 style={{ border: '1px solid var(--accent)', color: 'var(--accent)', background: 'var(--accent-glow)' }}>
                 <ExternalIcon /> Live Demo
               </a>
             )}
             {project.demoUrl && (
               <a href={project.demoUrl} target="_blank" rel="noopener noreferrer"
-                className="flex items-center gap-1.5 font-mono text-xs px-3 py-1.5 rounded-lg"
+                className="hover-lift flex items-center gap-1.5 font-mono text-xs px-3 py-1.5 rounded-lg"
                 style={{ border: '1px solid var(--highlight)', color: 'var(--highlight)', background: 'var(--highlight-bg)' }}>
                 ▶ Watch Demo
               </a>
@@ -421,13 +421,13 @@ function ContactPopup({ onClose }) {
           boxShadow: '0 8px 48px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.07)',
         }}
         onClick={e => e.stopPropagation()}>
-        <button onClick={onClose} className="absolute top-4 right-4 w-7 h-7 flex items-center justify-center rounded-full"
+        <button onClick={onClose} className="hover-lift absolute top-4 right-4 w-7 h-7 flex items-center justify-center rounded-full"
           style={{ background: 'var(--surface2)', color: 'var(--text2)' }}>×</button>
         <h3 className="font-mono text-sm font-semibold mb-4" style={{ color: 'var(--accent)' }}>Get in touch</h3>
         <div className="flex flex-col gap-3">
           {profile.emails.map(e => (
             <a key={e.address} href={`mailto:${e.address}`}
-              className="flex items-center gap-3 p-3 rounded-xl transition-all"
+              className="hover-lift flex items-center gap-3 p-3 rounded-xl transition-all"
               style={{ border: '1px solid var(--border)', background: 'var(--surface2)' }}
               onMouseEnter={ev => ev.currentTarget.style.borderColor = 'var(--accent)'}
               onMouseLeave={ev => ev.currentTarget.style.borderColor = 'var(--border)'}>
@@ -444,7 +444,7 @@ function ContactPopup({ onClose }) {
             </a>
           ))}
           <a href={`tel:${profile.phone}`}
-            className="flex items-center gap-3 p-3 rounded-xl transition-all"
+            className="hover-lift flex items-center gap-3 p-3 rounded-xl transition-all"
             style={{ border: '1px solid var(--border)', background: 'var(--surface2)' }}
             onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--highlight)'}
             onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border)'}>
@@ -567,10 +567,10 @@ export default function Home() {
 
             {/* Avatar */}
             <div className="flex-shrink-0 mt-6 sm:mt-8">
-              <div className="relative" style={{ width: 'clamp(88px, 16vw, 148px)', height: 'clamp(88px, 16vw, 148px)' }}>
+              <div className="hover-lift relative" style={{ width: 'clamp(88px, 16vw, 148px)', height: 'clamp(88px, 16vw, 148px)' }}>
                 <div className="absolute inset-0 rounded-2xl glow-ring opacity-50" />
                 <img src={profile.avatar} alt="Venkata Harish"
-                  className="w-full h-full rounded-2xl object-cover border-2"
+                  className="img-zoom w-full h-full rounded-2xl object-cover border-2"
                   style={{ objectPosition: '50% 20%', borderColor: 'var(--border2)' }} />
                 {profile.openToOpportunities && (
                   <div className="absolute -bottom-1.5 -right-1.5 w-5 h-5 rounded-full border-2"
@@ -700,7 +700,7 @@ export default function Home() {
               Venkata Harish G A · AI Engineer
             </span>
             <button onClick={() => setContactOpen(true)}
-              className="font-mono text-xs transition-colors" style={{ color: 'var(--text3)' }}
+              className="hover-lift font-mono text-xs transition-colors" style={{ color: 'var(--text3)' }}
               onMouseEnter={e => e.currentTarget.style.color = 'var(--accent)'}
               onMouseLeave={e => e.currentTarget.style.color = 'var(--text3)'}>
               {profile.emails[0].address}

@@ -74,7 +74,7 @@ export default function Navbar({ onContactClick }) {
         <div className="hidden sm:flex items-center gap-1">
           {links.map(link => (
             <a key={link.href} href={link.href}
-              className="font-mono text-xs px-3 py-1.5 rounded-lg transition-all"
+              className="hover-lift font-mono text-xs px-3 py-1.5 rounded-lg transition-all"
               style={{ color: 'var(--text2)' }}
               onMouseEnter={e => { e.currentTarget.style.color = 'var(--accent)'; e.currentTarget.style.background = 'var(--accent-glow)' }}
               onMouseLeave={e => { e.currentTarget.style.color = 'var(--text2)'; e.currentTarget.style.background = 'transparent' }}>
@@ -82,7 +82,7 @@ export default function Navbar({ onContactClick }) {
             </a>
           ))}
           <button onClick={onContactClick}
-            className="ml-2 font-mono text-xs px-3 py-1.5 rounded-lg font-semibold transition-all"
+            className="hover-lift ml-2 font-mono text-xs px-3 py-1.5 rounded-lg font-semibold transition-all"
             style={{ background: 'var(--accent)', color: '#fff' }}
             onMouseEnter={e => e.currentTarget.style.background = 'var(--accent-hover)'}
             onMouseLeave={e => e.currentTarget.style.background = 'var(--accent)'}>
@@ -94,7 +94,7 @@ export default function Navbar({ onContactClick }) {
           {/* Theme toggle */}
           <button
             onClick={toggleTheme}
-            className="w-9 h-9 flex items-center justify-center rounded-lg transition-all"
+            className="hover-lift w-9 h-9 flex items-center justify-center rounded-lg transition-all"
             style={{
               background: 'color-mix(in srgb, var(--surface2) 70%, transparent)',
               border: '1px solid color-mix(in srgb, var(--border) 60%, transparent)',
@@ -116,7 +116,7 @@ export default function Navbar({ onContactClick }) {
           </button>
 
           {/* Mobile hamburger */}
-          <button className="sm:hidden w-9 h-9 flex items-center justify-center rounded-lg transition-all"
+          <button className="hover-lift sm:hidden w-9 h-9 flex items-center justify-center rounded-lg transition-all"
             style={{
               background: 'color-mix(in srgb, var(--surface2) 70%, transparent)',
               border: '1px solid color-mix(in srgb, var(--border) 60%, transparent)',
