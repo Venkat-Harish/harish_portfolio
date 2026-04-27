@@ -11,6 +11,7 @@ export const profile = {
   leetcode: "https://leetcode.com/venkatharishga/",
   avatar: "/images/avatar.jpg",
   summary: "AI Engineer building production ML systems — text-to-SQL pipelines, RAG document assistants, knowledge graphs, and computer vision at scale.",
+  openToOpportunities: true,
   education: {
     institute: "National Institute of Technology (NIT) Patna",
     degree: "B.Tech in Computer Science and Engineering",
