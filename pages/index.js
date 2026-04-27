@@ -1,50 +1,69 @@
 import Head from 'next/head'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import Navbar from '../components/Navbar'
 import { profile, companies, projects, skills, certifications } from '../data'
 
-/* ── helpers ─────────────────────────────────────────── */
-function calcYears(startDate, endDate) {
+/* ── Duration helpers ────────────────────────────────── */
+function calcDuration(startDate, endDate) {
   const start = new Date(startDate)
   const end = endDate ? new Date(endDate) : new Date()
-  const months = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth())
-  const years = months / 12
-  return Math.floor(years * 10) / 10 // e.g. 2.3
+  let months = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth())
+  if (months < 1) months = 1
+  const years = Math.floor(months / 12)
+  const rem = months % 12
+  if (years === 0) return `${rem} month${rem !== 1 ? 's' : ''}`
+  if (rem === 0) return `${years} year${years !== 1 ? 's' : ''}`
+  return `${years} year${years !== 1 ? 's' : ''}, ${rem} month${rem !== 1 ? 's' : ''}`
 }
 
 function totalExp() {
   const earliest = companies.reduce((min, c) => {
-    const d = new Date(c.startDate)
-    return d < min ? d : min
+    const d = new Date(c.startDate); return d < min ? d : min
   }, new Date())
-  return calcYears(earliest.toISOString())
+  return calcDuration(earliest.toISOString(), null)
 }
 
 /* ── Chip ────────────────────────────────────────────── */
 function Chip({ label }) {
   return (
     <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-mono"
-      style={{ background: 'var(--accent-glow)', color: 'var(--accent)', border: '1px solid var(--accent)', borderColor: 'color-mix(in srgb, var(--accent) 35%, transparent)' }}>
+      style={{ background: 'var(--accent-glow)', color: 'var(--accent)', border: '1px solid color-mix(in srgb, var(--accent) 35%, transparent)' }}>
       {label}
     </span>
   )
 }
 
-function HighlightChip({ label }) {
+/* ── Feature List (shared by project modal + personal card) */
+function FeatureList({ features }) {
+  if (!features || features.length === 0) return null
   return (
-    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-mono"
-      style={{ background: 'var(--highlight-bg)', color: 'var(--highlight)', border: '1px solid color-mix(in srgb, var(--highlight) 30%, transparent)' }}>
-      {label}
-    </span>
+    <div className="rounded-xl p-4 mb-4" style={{ background: 'var(--surface2)', border: '1px solid var(--border)' }}>
+      <p className="font-mono text-[9px] tracking-widest mb-3" style={{ color: 'var(--accent)' }}>HOW IT WORKS</p>
+      <div className="flex flex-col gap-3">
+        {features.map((f, i) => (
+          <div key={i} className="flex gap-3 items-start">
+            <div className="flex-shrink-0 w-7 h-7 rounded-lg flex items-center justify-center text-sm"
+              style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}>
+              {f.icon}
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="font-mono text-[11px] font-semibold mb-0.5" style={{ color: 'var(--text)' }}>{f.label}</div>
+              <div className="text-[11px] leading-relaxed" style={{ color: 'var(--text2)' }}>{f.detail}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
   )
 }
 
-/* ── Project Detail Modal ────────────────────────────── */
+/* ── Project Modal ───────────────────────────────────── */
 function ProjectModal({ project, companyColor, onClose }) {
   useEffect(() => {
-    const handler = e => { if (e.key === 'Escape') onClose() }
-    window.addEventListener('keydown', handler)
-    return () => window.removeEventListener('keydown', handler)
+    const h = e => { if (e.key === 'Escape') onClose() }
+    window.addEventListener('keydown', h)
+    document.body.style.overflow = 'hidden'
+    return () => { window.removeEventListener('keydown', h); document.body.style.overflow = '' }
   }, [onClose])
 
   return (
@@ -52,110 +71,94 @@ function ProjectModal({ project, companyColor, onClose }) {
       style={{ background: 'var(--modal-bg)', backdropFilter: 'blur(8px)' }}
       onClick={onClose}>
       <div
-        className="relative w-full sm:max-w-xl rounded-t-2xl sm:rounded-2xl p-5 sm:p-6 shadow-2xl max-h-[90vh] overflow-y-auto"
-        style={{
-          background: 'var(--surface)',
-          border: '1px solid var(--border2)',
-          borderTop: `3px solid ${companyColor || 'var(--accent)'}`,
-        }}
+        className="relative w-full sm:max-w-xl rounded-t-2xl sm:rounded-2xl shadow-2xl max-h-[90vh] overflow-y-auto"
+        style={{ background: 'var(--surface)', border: '1px solid var(--border2)', borderTop: `3px solid ${companyColor || 'var(--accent)'}` }}
         onClick={e => e.stopPropagation()}>
 
-        <button onClick={onClose}
-          className="absolute top-4 right-4 w-7 h-7 flex items-center justify-center rounded-full text-lg font-light transition-all"
-          style={{ background: 'var(--surface2)', color: 'var(--text2)' }}>×</button>
-
-        <div className="flex flex-wrap gap-1.5 mb-3">
-          {project.chips.map(c => <Chip key={c} label={c} />)}
-        </div>
-
-        <h3 className="font-mono text-base font-semibold mb-2" style={{ color: 'var(--text)' }}>
-          {project.title}
-        </h3>
-
-        <div className="inline-flex items-center gap-1.5 text-xs font-mono font-semibold px-3 py-1 rounded-full mb-4"
-          style={{ background: 'var(--highlight-bg)', color: 'var(--highlight)' }}>
-          ↑ {project.impact}
-        </div>
-
-        <p className="text-sm leading-relaxed mb-4" style={{ color: 'var(--text2)' }}>{project.description}</p>
-
-        {/* Features (personal projects) */}
-        {project.features && project.features.length > 0 && (
-          <div className="mb-4 rounded-xl p-4" style={{ background: 'var(--surface2)', border: '1px solid var(--border)' }}>
-            <p className="font-mono text-[10px] tracking-wider mb-3" style={{ color: 'var(--accent)' }}>FEATURES</p>
-            <div className="flex flex-col gap-3">
-              {project.features.map((f, i) => (
-                <div key={i} className="flex gap-3">
-                  <span className="text-lg flex-shrink-0 mt-0.5">{f.icon}</span>
-                  <div>
-                    <div className="font-mono text-xs font-semibold mb-0.5" style={{ color: 'var(--text)' }}>{f.label}</div>
-                    <div className="text-xs leading-relaxed" style={{ color: 'var(--text2)' }}>{f.detail}</div>
-                  </div>
-                </div>
-              ))}
+        {/* Sticky header */}
+        <div className="sticky top-0 z-10 flex items-start justify-between px-5 pt-5 pb-3"
+          style={{ background: 'var(--surface)', borderBottom: '1px solid var(--border)' }}>
+          <div className="flex-1 pr-8">
+            <div className="flex flex-wrap gap-1.5 mb-2">
+              {project.chips.map(c => <Chip key={c} label={c} />)}
             </div>
+            <h3 className="font-mono text-sm font-semibold" style={{ color: 'var(--text)' }}>{project.title}</h3>
           </div>
-        )}
-
-        <div className="flex flex-wrap gap-1.5 mb-4">
-          {project.tags.map(t => (
-            <span key={t} className="font-mono text-[10px] px-2 py-0.5 rounded"
-              style={{ background: 'var(--surface2)', color: 'var(--text3)', border: '1px solid var(--border)' }}>{t}</span>
-          ))}
+          <button onClick={onClose}
+            className="flex-shrink-0 w-7 h-7 flex items-center justify-center rounded-full text-base"
+            style={{ background: 'var(--surface2)', color: 'var(--text2)' }}>×</button>
         </div>
 
-        <div className="flex flex-wrap gap-2">
-          {project.github && (
-            <a href={project.github} target="_blank" rel="noopener noreferrer"
-              className="flex items-center gap-1.5 font-mono text-xs px-3 py-1.5 rounded-lg transition-all"
-              style={{ border: '1px solid var(--border2)', color: 'var(--text2)' }}>
-              <GithubIcon /> GitHub
-            </a>
-          )}
-          {project.liveUrl && (
-            <a href={project.liveUrl} target="_blank" rel="noopener noreferrer"
-              className="flex items-center gap-1.5 font-mono text-xs px-3 py-1.5 rounded-lg transition-all"
-              style={{ border: '1px solid var(--accent)', color: 'var(--accent)', background: 'var(--accent-glow)' }}>
-              <ExternalIcon /> Live Demo
-            </a>
-          )}
-          {project.demoUrl && (
-            <a href={project.demoUrl} target="_blank" rel="noopener noreferrer"
-              className="flex items-center gap-1.5 font-mono text-xs px-3 py-1.5 rounded-lg transition-all"
-              style={{ border: '1px solid var(--highlight)', color: 'var(--highlight)', background: 'var(--highlight-bg)' }}>
-              ▶ Watch Demo
-            </a>
-          )}
-          {!project.github && !project.liveUrl && !project.demoUrl && (
-            <span className="font-mono text-[10px] px-2 py-1 rounded"
-              style={{ border: '1px solid var(--border)', color: 'var(--text3)' }}>
-              Internal / Proprietary
-            </span>
-          )}
+        <div className="px-5 pb-5 pt-4">
+          {/* Impact */}
+          <div className="inline-flex items-center gap-1.5 text-xs font-mono font-semibold px-3 py-1 rounded-full mb-4"
+            style={{ background: 'var(--highlight-bg)', color: 'var(--highlight)' }}>
+            ↑ {project.impact}
+          </div>
+
+          <p className="text-sm leading-relaxed mb-4" style={{ color: 'var(--text2)' }}>{project.description}</p>
+
+          <FeatureList features={project.features} />
+
+          {/* Tags */}
+          <div className="flex flex-wrap gap-1.5 mb-4">
+            {project.tags.map(t => (
+              <span key={t} className="font-mono text-[10px] px-2 py-0.5 rounded"
+                style={{ background: 'var(--surface2)', color: 'var(--text3)', border: '1px solid var(--border)' }}>{t}</span>
+            ))}
+          </div>
+
+          {/* Links */}
+          <div className="flex flex-wrap gap-2">
+            {project.github && (
+              <a href={project.github} target="_blank" rel="noopener noreferrer"
+                className="flex items-center gap-1.5 font-mono text-xs px-3 py-1.5 rounded-lg"
+                style={{ border: '1px solid var(--border2)', color: 'var(--text2)' }}>
+                <GithubIcon /> GitHub
+              </a>
+            )}
+            {project.liveUrl && (
+              <a href={project.liveUrl} target="_blank" rel="noopener noreferrer"
+                className="flex items-center gap-1.5 font-mono text-xs px-3 py-1.5 rounded-lg"
+                style={{ border: '1px solid var(--accent)', color: 'var(--accent)', background: 'var(--accent-glow)' }}>
+                <ExternalIcon /> Live Demo
+              </a>
+            )}
+            {project.demoUrl && (
+              <a href={project.demoUrl} target="_blank" rel="noopener noreferrer"
+                className="flex items-center gap-1.5 font-mono text-xs px-3 py-1.5 rounded-lg"
+                style={{ border: '1px solid var(--highlight)', color: 'var(--highlight)', background: 'var(--highlight-bg)' }}>
+                ▶ Watch Demo
+              </a>
+            )}
+            {!project.github && !project.liveUrl && !project.demoUrl && (
+              <span className="font-mono text-[10px] px-2 py-1 rounded"
+                style={{ border: '1px solid var(--border)', color: 'var(--text3)' }}>
+                Internal / Proprietary
+              </span>
+            )}
+          </div>
         </div>
       </div>
     </div>
   )
 }
 
-/* ── Project Row ─────────────────────────────────────── */
+/* ── Project Row (in accordion) ──────────────────────── */
 function ProjectRow({ project, companyColor, onOpen }) {
   return (
     <button
       className="group w-full flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 px-3 py-3 rounded-lg text-left transition-all"
-      style={{ '--hover-bg': 'var(--surface2)' }}
       onMouseEnter={e => e.currentTarget.style.background = 'var(--surface2)'}
       onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
       onClick={() => onOpen(project)}>
-      <span className="font-sans text-sm flex-1 min-w-0 transition-colors" style={{ color: 'var(--text)' }}>
-        {project.title}
-      </span>
+      <span className="font-sans text-sm flex-1 min-w-0" style={{ color: 'var(--text)' }}>{project.title}</span>
       <div className="flex items-center gap-2 flex-wrap">
         {project.chips.slice(0, 3).map(c => <Chip key={c} label={c} />)}
-        <span className="font-mono text-[10px] font-semibold ml-auto sm:ml-0 whitespace-nowrap" style={{ color: 'var(--highlight)' }}>
+        <span className="font-mono text-[10px] font-semibold whitespace-nowrap" style={{ color: 'var(--highlight)' }}>
           ↑ {project.impact}
         </span>
-        <span className="font-mono text-[9px] px-1.5 py-0.5 rounded transition-all"
+        <span className="font-mono text-[9px] px-1.5 py-0.5 rounded"
           style={{ background: 'var(--accent-glow)', color: 'var(--accent)', border: '1px solid color-mix(in srgb, var(--accent) 30%, transparent)' }}>
           details →
         </span>
@@ -168,43 +171,34 @@ function ProjectRow({ project, companyColor, onOpen }) {
 function ExperienceAccordion({ company, companyProjects }) {
   const [open, setOpen] = useState(false)
   const [modalProject, setModalProject] = useState(null)
-  const years = calcYears(company.startDate, company.endDate)
+  const duration = calcDuration(company.startDate, company.endDate)
 
   return (
     <>
       {modalProject && (
         <ProjectModal project={modalProject} companyColor={company.color} onClose={() => setModalProject(null)} />
       )}
-
       <div className="rounded-xl overflow-hidden transition-all duration-300"
         style={{
-          border: `1px solid ${open ? company.color + '60' : 'var(--border)'}`,
-          boxShadow: open ? `0 0 0 1px ${company.color}20, 0 8px 32px ${company.color}10` : 'none'
+          border: `1px solid ${open ? company.color + '55' : 'var(--border)'}`,
+          boxShadow: open ? `0 4px 24px ${company.color}12` : 'none'
         }}>
-
-        {/* Header */}
         <button
           className="w-full flex items-center gap-3 sm:gap-4 p-4 sm:p-5 text-left transition-all"
-          style={{ background: open ? `color-mix(in srgb, ${company.color} 4%, var(--surface))` : 'var(--surface)' }}
+          style={{ background: open ? `color-mix(in srgb, ${company.color} 5%, var(--surface))` : 'var(--surface)' }}
           onClick={() => setOpen(o => !o)}>
 
-          {/* Logo */}
-          <div className="relative w-11 h-11 sm:w-13 sm:h-13 flex-shrink-0 rounded-xl overflow-hidden flex items-center justify-center p-1.5"
-            style={{ background: company.id === 'mercedes' || company.id === 'tcs' ? '#fff' : 'var(--surface2)', border: '1px solid var(--border)' }}>
-            <img src={company.logo} alt={company.name}
-              className="w-full h-full object-contain"
-              onError={e => { e.target.style.display = 'none' }} />
+          <div className="relative w-11 h-11 flex-shrink-0 rounded-xl overflow-hidden flex items-center justify-center p-1.5"
+            style={{ background: ['tcs','mercedes'].includes(company.id) ? '#fff' : 'var(--surface2)', border: '1px solid var(--border)' }}>
+            <img src={company.logo} alt={company.name} className="w-full h-full object-contain"
+              onError={e => e.target.style.display = 'none'} />
           </div>
 
           <div className="flex-1 min-w-0">
             <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 mb-0.5">
-              <span className="font-sans font-semibold text-sm sm:text-base" style={{ color: 'var(--text)' }}>
-                {company.name}
-              </span>
-              <span className="font-mono text-[9px] px-2 py-0.5 rounded-full"
-                style={{ background: `${company.color}20`, color: company.color }}>
-                {company.type}
-              </span>
+              <span className="font-sans font-semibold text-sm sm:text-base truncate" style={{ color: 'var(--text)' }}>{company.name}</span>
+              <span className="font-mono text-[9px] px-2 py-0.5 rounded-full flex-shrink-0"
+                style={{ background: `${company.color}20`, color: company.color }}>{company.type}</span>
             </div>
             <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5">
               <span className="font-mono text-xs font-medium" style={{ color: company.color }}>{company.role}</span>
@@ -213,29 +207,23 @@ function ExperienceAccordion({ company, companyProjects }) {
           </div>
 
           <div className="flex-shrink-0 text-right">
-            <div className="font-mono text-sm font-bold" style={{ color: 'var(--highlight)' }}>
-              {years}+ <span className="text-[10px] font-normal" style={{ color: 'var(--text3)' }}>yrs</span>
-            </div>
-            <div className="font-mono text-[9px] mt-0.5" style={{ color: 'var(--text3)' }}>
-              {companyProjects.length} projects
-            </div>
+            <div className="font-mono text-xs font-bold" style={{ color: 'var(--highlight)' }}>{duration}</div>
+            <div className="font-mono text-[9px] mt-0.5" style={{ color: 'var(--text3)' }}>{companyProjects.length} projects</div>
           </div>
 
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
-            strokeLinecap="round" strokeLinejoin="round"
-            className="flex-shrink-0 transition-transform duration-300"
+            strokeLinecap="round" strokeLinejoin="round" className="flex-shrink-0 transition-transform duration-300"
             style={{ color: open ? company.color : 'var(--text3)', transform: open ? 'rotate(180deg)' : 'none' }}>
             <polyline points="6 9 12 15 18 9"/>
           </svg>
         </button>
 
-        {/* Projects list */}
         {open && (
-          <div className="px-3 sm:px-4 py-3" style={{ borderTop: `1px solid var(--border)`, background: 'var(--bg2)' }}>
+          <div className="px-3 sm:px-4 py-3" style={{ borderTop: '1px solid var(--border)', background: 'var(--bg2)' }}>
             <p className="font-mono text-[9px] tracking-widest mb-2 px-3" style={{ color: 'var(--text3)' }}>
               CLICK A PROJECT FOR FULL DETAILS
             </p>
-            <div className="divide-y" style={{ '--tw-divide-opacity': 1, borderColor: 'var(--border)' }}>
+            <div className="divide-y" style={{ borderColor: 'var(--border)' }}>
               {companyProjects.map(p => (
                 <ProjectRow key={p.id} project={p} companyColor={company.color} onOpen={setModalProject} />
               ))}
@@ -247,110 +235,169 @@ function ExperienceAccordion({ company, companyProjects }) {
   )
 }
 
+/* ── Education Card ──────────────────────────────────── */
+function EducationCard() {
+  const [open, setOpen] = useState(false)
+  const edu = profile.education
+
+  return (
+    <div className="rounded-xl overflow-hidden transition-all duration-300"
+      style={{
+        border: `1px solid ${open ? 'var(--accent)' : 'var(--border)'}`,
+        boxShadow: open ? '0 4px 24px var(--accent-glow)' : 'none'
+      }}>
+      <button
+        className="w-full flex items-center gap-3 sm:gap-4 p-4 sm:p-5 text-left transition-all"
+        style={{ background: open ? 'color-mix(in srgb, var(--accent) 4%, var(--surface))' : 'var(--surface)' }}
+        onClick={() => setOpen(o => !o)}>
+
+        <div className="w-11 h-11 flex-shrink-0 rounded-xl overflow-hidden flex items-center justify-center p-1.5 bg-white"
+          style={{ border: '1px solid var(--border)' }}>
+          <img src={edu.logo} alt="NIT Patna" className="w-full h-full object-contain" />
+        </div>
+
+        <div className="flex-1 min-w-0">
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 mb-0.5">
+            <span className="font-sans font-semibold text-sm sm:text-base truncate" style={{ color: 'var(--text)' }}>{edu.institute}</span>
+            <span className="font-mono text-[9px] px-2 py-0.5 rounded-full flex-shrink-0"
+              style={{ background: 'var(--accent-glow)', color: 'var(--accent)' }}>B.Tech</span>
+          </div>
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5">
+            <span className="font-mono text-xs font-medium" style={{ color: 'var(--accent)' }}>CSE</span>
+            <span className="font-mono text-[10px]" style={{ color: 'var(--text3)' }}>{edu.period}</span>
+            <span className="font-mono text-[10px]" style={{ color: 'var(--text3)' }}>{edu.location}</span>
+          </div>
+        </div>
+
+        <div className="flex-shrink-0 text-right">
+          <div className="font-mono text-[9px]" style={{ color: 'var(--text3)' }}>
+            {open ? 'collapse' : `${edu.highlights.length} highlights`}
+          </div>
+        </div>
+
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
+          strokeLinecap="round" strokeLinejoin="round" className="flex-shrink-0 transition-transform duration-300"
+          style={{ color: open ? 'var(--accent)' : 'var(--text3)', transform: open ? 'rotate(180deg)' : 'none' }}>
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </button>
+
+      {open && (
+        <div className="px-4 py-4" style={{ borderTop: '1px solid var(--border)', background: 'var(--bg2)' }}>
+          <div className="grid sm:grid-cols-2 gap-2">
+            {edu.highlights.map((h, i) => (
+              <div key={i} className="flex gap-3 items-start p-3 rounded-xl transition-all"
+                style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}>
+                <div className="flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center text-base"
+                  style={{ background: 'var(--surface2)', border: '1px solid var(--border)' }}>
+                  {h.icon}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="font-mono text-[11px] font-semibold mb-0.5" style={{ color: 'var(--text)' }}>{h.label}</div>
+                  <div className="text-[11px] leading-relaxed mb-1.5" style={{ color: 'var(--text2)' }}>{h.detail}</div>
+                  {h.proofUrl ? (
+                    <a href={h.proofUrl} target="_blank" rel="noopener noreferrer"
+                      className="font-mono text-[9px] px-2 py-0.5 rounded inline-flex items-center gap-1"
+                      style={{ border: '1px solid var(--accent)', color: 'var(--accent)', background: 'var(--accent-glow)' }}>
+                      <ExternalIcon size={8} /> View Proof
+                    </a>
+                  ) : (
+                    <span className="font-mono text-[9px] px-2 py-0.5 rounded inline-block"
+                      style={{ border: '1px solid var(--border)', color: 'var(--text3)' }}>
+                      proof link — add to data/index.js
+                    </span>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
 /* ── Personal Project Card ───────────────────────────── */
 function PersonalCard({ project }) {
   const [expanded, setExpanded] = useState(false)
-  const [modal, setModal] = useState(false)
 
   return (
-    <>
-      {modal && <ProjectModal project={project} companyColor="var(--accent)" onClose={() => setModal(false)} />}
-
-      <div className="rounded-xl overflow-hidden transition-all duration-300"
-        style={{ border: `1px solid ${expanded ? 'var(--border2)' : 'var(--border)'}`, background: 'var(--surface)' }}>
-
-        <button className="w-full flex items-start sm:items-center gap-3 p-4 text-left transition-all"
-          style={{ background: expanded ? 'var(--surface2)' : 'var(--surface)' }}
-          onClick={() => setExpanded(o => !o)}>
-          <div className="flex-1 min-w-0">
-            <div className="flex flex-wrap items-center gap-2 mb-2">
-              <span className="font-sans font-semibold text-sm" style={{ color: 'var(--text)' }}>{project.title}</span>
-              {project.github && (
-                <span className="font-mono text-[9px] px-1.5 py-0.5 rounded"
-                  style={{ border: '1px solid var(--success)', color: 'var(--success)', background: 'var(--success-bg)' }}>
-                  Open Source
-                </span>
-              )}
-            </div>
-            <div className="flex flex-wrap gap-1.5">
-              {project.chips.map(c => <Chip key={c} label={c} />)}
-            </div>
-          </div>
-          <div className="flex flex-col items-end gap-1 flex-shrink-0 mt-0.5">
-            <span className="font-mono text-[10px] font-semibold" style={{ color: 'var(--highlight)' }}>
-              ↑ {project.impact}
-            </span>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
-              strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300"
-              style={{ color: 'var(--text3)', transform: expanded ? 'rotate(180deg)' : 'none' }}>
-              <polyline points="6 9 12 15 18 9"/>
-            </svg>
-          </div>
-        </button>
-
-        {expanded && (
-          <div className="px-4 pb-4 pt-3" style={{ borderTop: '1px solid var(--border)', background: 'var(--bg2)' }}>
-            <p className="text-sm leading-relaxed mb-3" style={{ color: 'var(--text2)' }}>{project.description}</p>
-
-            {/* Feature pills */}
-            {project.features && project.features.length > 0 && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
-                {project.features.map((f, i) => (
-                  <div key={i} className="flex gap-2 items-start p-2.5 rounded-lg"
-                    style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}>
-                    <span className="text-base flex-shrink-0">{f.icon}</span>
-                    <div>
-                      <div className="font-mono text-[10px] font-semibold mb-0.5" style={{ color: 'var(--accent)' }}>{f.label}</div>
-                      <div className="text-[11px] leading-relaxed" style={{ color: 'var(--text2)' }}>{f.detail}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+    <div className="rounded-xl overflow-hidden transition-all duration-300"
+      style={{ border: `1px solid ${expanded ? 'var(--border2)' : 'var(--border)'}`, background: 'var(--surface)' }}>
+      <button
+        className="w-full flex items-start sm:items-center gap-3 p-4 text-left transition-all"
+        style={{ background: expanded ? 'var(--surface2)' : 'var(--surface)' }}
+        onClick={() => setExpanded(o => !o)}>
+        <div className="flex-1 min-w-0">
+          <div className="flex flex-wrap items-center gap-2 mb-2">
+            <span className="font-sans font-semibold text-sm" style={{ color: 'var(--text)' }}>{project.title}</span>
+            {project.github && (
+              <span className="font-mono text-[9px] px-1.5 py-0.5 rounded"
+                style={{ border: '1px solid var(--success)', color: 'var(--success)', background: 'var(--success-bg)' }}>
+                Open Source
+              </span>
             )}
-
-            <div className="flex flex-wrap gap-1.5 mb-4">
-              {project.tags.map(t => (
-                <span key={t} className="font-mono text-[10px] px-2 py-0.5 rounded"
-                  style={{ background: 'var(--surface)', color: 'var(--text3)', border: '1px solid var(--border)' }}>{t}</span>
-              ))}
-            </div>
-
-            <div className="flex flex-wrap gap-2">
-              {project.github && (
-                <a href={project.github} target="_blank" rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 font-mono text-xs px-3 py-1.5 rounded-lg"
-                  style={{ border: '1px solid var(--border2)', color: 'var(--text2)' }}>
-                  <GithubIcon /> GitHub
-                </a>
-              )}
-              {project.liveUrl && (
-                <a href={project.liveUrl} target="_blank" rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 font-mono text-xs px-3 py-1.5 rounded-lg"
-                  style={{ border: '1px solid var(--accent)', color: 'var(--accent)', background: 'var(--accent-glow)' }}>
-                  <ExternalIcon /> Live Demo
-                </a>
-              )}
-              {project.demoUrl && (
-                <a href={project.demoUrl} target="_blank" rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 font-mono text-xs px-3 py-1.5 rounded-lg"
-                  style={{ border: '1px solid var(--highlight)', color: 'var(--highlight)', background: 'var(--highlight-bg)' }}>
-                  ▶ Watch Demo
-                </a>
-              )}
-            </div>
           </div>
-        )}
-      </div>
-    </>
+          <div className="flex flex-wrap gap-1.5">
+            {project.chips.map(c => <Chip key={c} label={c} />)}
+          </div>
+        </div>
+        <div className="flex flex-col items-end gap-1 flex-shrink-0 mt-0.5">
+          <span className="font-mono text-[10px] font-semibold" style={{ color: 'var(--highlight)' }}>↑ {project.impact}</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
+            strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300"
+            style={{ color: 'var(--text3)', transform: expanded ? 'rotate(180deg)' : 'none' }}>
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </div>
+      </button>
+
+      {expanded && (
+        <div className="px-4 pb-4 pt-3" style={{ borderTop: '1px solid var(--border)', background: 'var(--bg2)' }}>
+          <p className="text-sm leading-relaxed mb-4" style={{ color: 'var(--text2)' }}>{project.description}</p>
+          <FeatureList features={project.features} />
+          <div className="flex flex-wrap gap-1.5 mb-4">
+            {project.tags.map(t => (
+              <span key={t} className="font-mono text-[10px] px-2 py-0.5 rounded"
+                style={{ background: 'var(--surface)', color: 'var(--text3)', border: '1px solid var(--border)' }}>{t}</span>
+            ))}
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {project.github && (
+              <a href={project.github} target="_blank" rel="noopener noreferrer"
+                className="flex items-center gap-1.5 font-mono text-xs px-3 py-1.5 rounded-lg"
+                style={{ border: '1px solid var(--border2)', color: 'var(--text2)' }}>
+                <GithubIcon /> GitHub
+              </a>
+            )}
+            {project.liveUrl && (
+              <a href={project.liveUrl} target="_blank" rel="noopener noreferrer"
+                className="flex items-center gap-1.5 font-mono text-xs px-3 py-1.5 rounded-lg"
+                style={{ border: '1px solid var(--accent)', color: 'var(--accent)', background: 'var(--accent-glow)' }}>
+                <ExternalIcon /> Live Demo
+              </a>
+            )}
+            {project.demoUrl && (
+              <a href={project.demoUrl} target="_blank" rel="noopener noreferrer"
+                className="flex items-center gap-1.5 font-mono text-xs px-3 py-1.5 rounded-lg"
+                style={{ border: '1px solid var(--highlight)', color: 'var(--highlight)', background: 'var(--highlight-bg)' }}>
+                ▶ Watch Demo
+              </a>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
   )
 }
 
 /* ── Contact Popup ───────────────────────────────────── */
 function ContactPopup({ onClose }) {
   useEffect(() => {
-    const handler = e => { if (e.key === 'Escape') onClose() }
-    window.addEventListener('keydown', handler)
-    return () => window.removeEventListener('keydown', handler)
+    const h = e => { if (e.key === 'Escape') onClose() }
+    window.addEventListener('keydown', h)
+    document.body.style.overflow = 'hidden'
+    return () => { window.removeEventListener('keydown', h); document.body.style.overflow = '' }
   }, [onClose])
 
   return (
@@ -360,12 +407,9 @@ function ContactPopup({ onClose }) {
       <div className="relative w-full sm:max-w-sm rounded-t-2xl sm:rounded-2xl p-6 shadow-2xl"
         style={{ background: 'var(--surface)', border: '1px solid var(--border2)', borderTop: '3px solid var(--accent)' }}
         onClick={e => e.stopPropagation()}>
-        <button onClick={onClose}
-          className="absolute top-4 right-4 w-7 h-7 flex items-center justify-center rounded-full"
+        <button onClick={onClose} className="absolute top-4 right-4 w-7 h-7 flex items-center justify-center rounded-full"
           style={{ background: 'var(--surface2)', color: 'var(--text2)' }}>×</button>
-
         <h3 className="font-mono text-sm font-semibold mb-4" style={{ color: 'var(--accent)' }}>Get in touch</h3>
-
         <div className="flex flex-col gap-3">
           {profile.emails.map(e => (
             <a key={e.address} href={`mailto:${e.address}`}
@@ -375,7 +419,7 @@ function ContactPopup({ onClose }) {
               onMouseLeave={ev => ev.currentTarget.style.borderColor = 'var(--border)'}>
               <div className="w-8 h-8 flex items-center justify-center rounded-lg flex-shrink-0"
                 style={{ background: 'var(--accent-glow)' }}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
                 </svg>
               </div>
@@ -392,7 +436,7 @@ function ContactPopup({ onClose }) {
             onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border)'}>
             <div className="w-8 h-8 flex items-center justify-center rounded-lg flex-shrink-0"
               style={{ background: 'var(--highlight-bg)' }}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--highlight)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--highlight)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 10.8 19.79 19.79 0 011 2.18 2 2 0 012.96 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L7.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92z"/>
               </svg>
             </div>
@@ -422,15 +466,15 @@ function SectionHeader({ index, title }) {
 function GithubIcon() {
   return <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
 }
-function ExternalIcon() {
-  return <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+function ExternalIcon({ size = 11 }) {
+  return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
 }
 
 /* ── Page ────────────────────────────────────────────── */
 export default function Home() {
   const [contactOpen, setContactOpen] = useState(false)
   const personalProjects = projects.filter(p => p.isPersonal)
-  const expYears = totalExp()
+  const exp = totalExp()
 
   return (
     <>
@@ -445,12 +489,11 @@ export default function Home() {
 
       <main className="min-h-screen bg-theme">
 
-        {/* ── Hero ──────────────────────────────────────── */}
+        {/* ── Hero ─────────────────────────────────────── */}
         <section className="max-w-5xl mx-auto px-4 sm:px-6 pt-24 sm:pt-32 pb-14 sm:pb-20">
+          <div className="flex flex-row items-start gap-5 sm:gap-10 mb-8">
 
-          <div className="flex flex-row items-center gap-5 sm:gap-10 mb-8">
-
-            {/* Text — left */}
+            {/* Text */}
             <div className="flex-1 min-w-0">
               <div className="font-mono text-[10px] sm:text-xs tracking-widest uppercase mb-3 flex items-center gap-2"
                 style={{ color: 'var(--success)' }}>
@@ -469,23 +512,19 @@ export default function Home() {
                 AI Engineer<span className="blink" style={{ color: 'var(--accent)' }}>_</span>
               </p>
 
-              <p className="text-sm leading-relaxed mb-6 hidden sm:block max-w-lg" style={{ color: 'var(--text2)' }}>
+              <p className="text-sm leading-relaxed mb-5 hidden sm:block max-w-lg" style={{ color: 'var(--text2)' }}>
                 {profile.summary}
               </p>
 
-              {/* Dynamic exp badge */}
+              {/* Dynamic experience badge */}
               <div className="flex flex-wrap items-center gap-2 mb-5">
                 <div className="flex items-center gap-2 px-3 py-1.5 rounded-full font-mono text-xs font-semibold"
                   style={{ background: 'var(--accent-glow)', color: 'var(--accent)', border: '1px solid color-mix(in srgb, var(--accent) 30%, transparent)' }}>
-                  {expYears}+ yrs experience
-                </div>
-                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full font-mono text-xs"
-                  style={{ background: 'var(--highlight-bg)', color: 'var(--highlight)', border: '1px solid color-mix(in srgb, var(--highlight) 25%, transparent)' }}>
-                  NIT Patna · CSE
+                  {exp} experience
                 </div>
               </div>
 
-              {/* Social links */}
+              {/* Links */}
               <div className="flex flex-wrap gap-2">
                 {[
                   { href: profile.github, label: 'GitHub', icon: <GithubIcon /> },
@@ -510,53 +549,25 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Avatar — right, parallel to name */}
-            <div className="flex-shrink-0 self-start mt-6 sm:mt-8">
-              <div className="relative" style={{ width: 'clamp(90px, 18vw, 150px)', height: 'clamp(90px, 18vw, 150px)' }}>
-                <div className="absolute inset-0 rounded-2xl glow-ring opacity-60" />
-                <img
-                  src={profile.avatar}
-                  alt="Venkata Harish"
+            {/* Avatar */}
+            <div className="flex-shrink-0 mt-6 sm:mt-8">
+              <div className="relative" style={{ width: 'clamp(88px, 16vw, 148px)', height: 'clamp(88px, 16vw, 148px)' }}>
+                <div className="absolute inset-0 rounded-2xl glow-ring opacity-50" />
+                <img src={profile.avatar} alt="Venkata Harish"
                   className="w-full h-full rounded-2xl object-cover border-2"
-                  style={{ objectPosition: '50% 20%', borderColor: 'var(--border2)' }}
-                />
-                <div className="absolute -bottom-1.5 -right-1.5 w-5 h-5 rounded-full border-2 flex items-center justify-center"
-                  style={{ background: 'var(--success)', borderColor: 'var(--bg)' }} title="Available" />
-              </div>
-            </div>
-
-          </div>
-        </section>
-
-        {/* ── Education ─────────────────────────────────── */}
-        <section className="max-w-5xl mx-auto px-4 sm:px-6 pb-14 sm:pb-20">
-          <SectionHeader index="01" title="Education" />
-          <div className="rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4"
-            style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}>
-            <div className="w-14 h-14 sm:w-16 sm:h-16 flex-shrink-0 rounded-xl p-2 bg-white border"
-              style={{ borderColor: 'var(--border)' }}>
-              <img src={profile.education.logo} alt="NIT Patna" className="w-full h-full object-contain" />
-            </div>
-            <div className="flex-1">
-              <h3 className="font-sans font-semibold text-base sm:text-lg" style={{ color: 'var(--text)' }}>
-                {profile.education.institute}
-              </h3>
-              <p className="font-mono text-xs sm:text-sm mt-0.5" style={{ color: 'var(--accent)' }}>
-                {profile.education.degree}
-              </p>
-              <div className="flex flex-wrap gap-x-4 mt-1.5">
-                <span className="font-mono text-[11px]" style={{ color: 'var(--text3)' }}>{profile.education.period}</span>
-                <span className="font-mono text-[11px]" style={{ color: 'var(--text3)' }}>{profile.education.location}</span>
+                  style={{ objectPosition: '50% 20%', borderColor: 'var(--border2)' }} />
+                <div className="absolute -bottom-1.5 -right-1.5 w-5 h-5 rounded-full border-2"
+                  style={{ background: 'var(--success)', borderColor: 'var(--bg)' }} />
               </div>
             </div>
           </div>
         </section>
 
-        {/* ── Experience ────────────────────────────────── */}
+        {/* ── Experience + Education ───────────────────── */}
         <section id="experience" className="max-w-5xl mx-auto px-4 sm:px-6 pb-14 sm:pb-20">
-          <SectionHeader index="02" title="Experience" />
+          <SectionHeader index="01" title="Experience & Education" />
           <p className="font-mono text-[10px] mb-4" style={{ color: 'var(--text3)' }}>
-            Click a company to expand → Click any project for full details
+            Click to expand → click any project for full pipeline details
           </p>
           <div className="flex flex-col gap-3">
             {companies.map(company => (
@@ -566,23 +577,25 @@ export default function Home() {
                 companyProjects={projects.filter(p => p.companyId === company.id)}
               />
             ))}
+            {/* Education accordion — sits below experience */}
+            <EducationCard />
           </div>
         </section>
 
-        {/* ── Personal Projects ─────────────────────────── */}
+        {/* ── Personal Projects ────────────────────────── */}
         <section id="projects" className="max-w-5xl mx-auto px-4 sm:px-6 pb-14 sm:pb-20">
-          <SectionHeader index="03" title="Personal Projects" />
+          <SectionHeader index="02" title="Personal Projects" />
           <p className="font-mono text-[10px] mb-4" style={{ color: 'var(--text3)' }}>
-            Click to expand features & details
+            Click to expand features & full pipeline
           </p>
           <div className="flex flex-col gap-3">
             {personalProjects.map(p => <PersonalCard key={p.id} project={p} />)}
           </div>
         </section>
 
-        {/* ── Skills ────────────────────────────────────── */}
+        {/* ── Skills ───────────────────────────────────── */}
         <section id="skills" className="max-w-5xl mx-auto px-4 sm:px-6 pb-14 sm:pb-20">
-          <SectionHeader index="04" title="Skills" />
+          <SectionHeader index="03" title="Skills" />
           <div className="grid sm:grid-cols-2 gap-3">
             {Object.entries(skills).map(([category, items]) => (
               <div key={category} className="rounded-xl p-4 sm:p-5"
@@ -606,9 +619,9 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ── Certifications ────────────────────────────── */}
+        {/* ── Certifications ───────────────────────────── */}
         <section className="max-w-5xl mx-auto px-4 sm:px-6 pb-14 sm:pb-20">
-          <SectionHeader index="05" title="Certifications" />
+          <SectionHeader index="04" title="Certifications" />
           <div className="flex flex-col sm:flex-row gap-3">
             {certifications.map((cert, i) => (
               <div key={i} className="rounded-xl p-4 flex-1"
@@ -622,7 +635,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ── Footer ────────────────────────────────────── */}
+        {/* ── Footer ───────────────────────────────────── */}
         <footer className="max-w-5xl mx-auto px-4 sm:px-6 pb-8 pt-8" style={{ borderTop: '1px solid var(--border)' }}>
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
             <span className="font-mono text-xs" style={{ color: 'var(--text3)' }}>
@@ -636,7 +649,6 @@ export default function Home() {
             </button>
           </div>
         </footer>
-
       </main>
     </>
   )
