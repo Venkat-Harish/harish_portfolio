@@ -71,7 +71,7 @@ function ProjectModal({ project, companyColor, onClose }) {
       style={{ background: 'var(--modal-bg)', backdropFilter: 'blur(8px)' }}
       onClick={onClose}>
       <div
-        className="relative w-full sm:max-w-xl rounded-t-2xl sm:rounded-2xl shadow-2xl max-h-[90vh] overflow-y-auto"
+        className="relative w-full sm:max-w-xl rounded-t-2xl sm:rounded-2xl shadow-2xl max-h-[90vh] overflow-y-auto slide-up"
         style={{ background: 'var(--surface)', border: '1px solid var(--border2)', borderTop: `3px solid ${companyColor || 'var(--accent)'}` }}
         onClick={e => e.stopPropagation()}>
 
@@ -219,7 +219,7 @@ function ExperienceAccordion({ company, companyProjects }) {
         </button>
 
         {open && (
-          <div className="px-3 sm:px-4 py-3" style={{ borderTop: '1px solid var(--border)', background: 'var(--bg2)' }}>
+          <div className="px-3 sm:px-4 py-3 slide-down" style={{ borderTop: '1px solid var(--border)', background: 'var(--bg2)' }}>
             <p className="font-mono text-[9px] tracking-widest mb-2 px-3" style={{ color: 'var(--text3)' }}>
               CLICK A PROJECT FOR FULL DETAILS
             </p>
@@ -283,7 +283,7 @@ function EducationCard() {
       </button>
 
       {open && (
-        <div className="px-4 py-4" style={{ borderTop: '1px solid var(--border)', background: 'var(--bg2)' }}>
+        <div className="px-4 py-4 slide-down" style={{ borderTop: '1px solid var(--border)', background: 'var(--bg2)' }}>
           <div className="grid sm:grid-cols-2 gap-2">
             {edu.highlights.map((h, i) => (
               <div key={i} className="flex gap-3 items-start p-3 rounded-xl transition-all"
@@ -295,17 +295,12 @@ function EducationCard() {
                 <div className="flex-1 min-w-0">
                   <div className="font-mono text-[11px] font-semibold mb-0.5" style={{ color: 'var(--text)' }}>{h.label}</div>
                   <div className="text-[11px] leading-relaxed mb-1.5" style={{ color: 'var(--text2)' }}>{h.detail}</div>
-                  {h.proofUrl ? (
+                  {h.proofUrl && (
                     <a href={h.proofUrl} target="_blank" rel="noopener noreferrer"
                       className="font-mono text-[9px] px-2 py-0.5 rounded inline-flex items-center gap-1"
                       style={{ border: '1px solid var(--accent)', color: 'var(--accent)', background: 'var(--accent-glow)' }}>
                       <ExternalIcon size={8} /> View Proof
                     </a>
-                  ) : (
-                    <span className="font-mono text-[9px] px-2 py-0.5 rounded inline-block"
-                      style={{ border: '1px solid var(--border)', color: 'var(--text3)' }}>
-                      proof link — add to data/index.js
-                    </span>
                   )}
                 </div>
               </div>
@@ -353,7 +348,7 @@ function PersonalCard({ project }) {
       </button>
 
       {expanded && (
-        <div className="px-4 pb-4 pt-3" style={{ borderTop: '1px solid var(--border)', background: 'var(--bg2)' }}>
+        <div className="px-4 pb-4 pt-3 slide-down" style={{ borderTop: '1px solid var(--border)', background: 'var(--bg2)' }}>
           <p className="text-sm leading-relaxed mb-4" style={{ color: 'var(--text2)' }}>{project.description}</p>
           <FeatureList features={project.features} />
           <div className="flex flex-wrap gap-1.5 mb-4">
@@ -404,7 +399,7 @@ function ContactPopup({ onClose }) {
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"
       style={{ background: 'var(--modal-bg)', backdropFilter: 'blur(8px)' }}
       onClick={onClose}>
-      <div className="relative w-full sm:max-w-sm rounded-t-2xl sm:rounded-2xl p-6 shadow-2xl"
+      <div className="relative w-full sm:max-w-sm rounded-t-2xl sm:rounded-2xl p-6 shadow-2xl slide-up"
         style={{ background: 'var(--surface)', border: '1px solid var(--border2)', borderTop: '3px solid var(--accent)' }}
         onClick={e => e.stopPropagation()}>
         <button onClick={onClose} className="absolute top-4 right-4 w-7 h-7 flex items-center justify-center rounded-full"
@@ -495,11 +490,13 @@ export default function Home() {
 
             {/* Text */}
             <div className="flex-1 min-w-0">
-              <div className="font-mono text-[10px] sm:text-xs tracking-widest uppercase mb-3 flex items-center gap-2"
-                style={{ color: 'var(--success)' }}>
-                <span className="w-2 h-2 rounded-full inline-block animate-pulse" style={{ background: 'var(--success)' }} />
-                Open to opportunities
-              </div>
+              {profile.openToOpportunities && (
+                <div className="font-mono text-[10px] sm:text-xs tracking-widest uppercase mb-3 flex items-center gap-2"
+                  style={{ color: 'var(--success)' }}>
+                  <span className="w-2 h-2 rounded-full inline-block animate-pulse" style={{ background: 'var(--success)' }} />
+                  Open to opportunities
+                </div>
+              )}
 
               <h1 className="font-mono font-bold leading-tight mb-1"
                 style={{ fontSize: 'clamp(1.75rem, 5vw, 3.75rem)', color: 'var(--text)' }}>
@@ -556,16 +553,18 @@ export default function Home() {
                 <img src={profile.avatar} alt="Venkata Harish"
                   className="w-full h-full rounded-2xl object-cover border-2"
                   style={{ objectPosition: '50% 20%', borderColor: 'var(--border2)' }} />
-                <div className="absolute -bottom-1.5 -right-1.5 w-5 h-5 rounded-full border-2"
-                  style={{ background: 'var(--success)', borderColor: 'var(--bg)' }} />
+                {profile.openToOpportunities && (
+                  <div className="absolute -bottom-1.5 -right-1.5 w-5 h-5 rounded-full border-2"
+                    style={{ background: 'var(--success)', borderColor: 'var(--bg)' }} />
+                )}
               </div>
             </div>
           </div>
         </section>
 
-        {/* ── Experience + Education ───────────────────── */}
+        {/* ── Experience ──────────────────────────────── */}
         <section id="experience" className="max-w-5xl mx-auto px-4 sm:px-6 pb-14 sm:pb-20">
-          <SectionHeader index="01" title="Experience & Education" />
+          <SectionHeader index="01" title="Experience" />
           <p className="font-mono text-[10px] mb-4" style={{ color: 'var(--text3)' }}>
             Click to expand → click any project for full pipeline details
           </p>
@@ -577,7 +576,13 @@ export default function Home() {
                 companyProjects={projects.filter(p => p.companyId === company.id)}
               />
             ))}
-            {/* Education accordion — sits below experience */}
+
+            {/* Education sub-section */}
+            <div className="flex items-center gap-3 mt-3 mb-1">
+              <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: 'var(--accent)' }} />
+              <span className="font-mono text-[10px] tracking-widest" style={{ color: 'var(--text3)' }}>EDUCATION</span>
+              <div className="flex-1 h-px" style={{ background: 'var(--border)' }} />
+            </div>
             <EducationCard />
           </div>
         </section>
@@ -596,42 +601,78 @@ export default function Home() {
         {/* ── Skills ───────────────────────────────────── */}
         <section id="skills" className="max-w-5xl mx-auto px-4 sm:px-6 pb-14 sm:pb-20">
           <SectionHeader index="03" title="Skills" />
-          <div className="grid sm:grid-cols-2 gap-3">
-            {Object.entries(skills).map(([category, items]) => (
-              <div key={category} className="rounded-xl p-4 sm:p-5"
-                style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}>
-                <h3 className="font-mono text-[10px] tracking-widest uppercase mb-3" style={{ color: 'var(--accent)' }}>
-                  {category}
-                </h3>
-                <div className="flex flex-wrap gap-2">
-                  {items.map(skill => (
-                    <span key={skill}
-                      className="font-mono text-[11px] px-2.5 py-1 rounded-lg transition-all cursor-default"
-                      style={{ background: 'var(--surface2)', color: 'var(--text2)', border: '1px solid var(--border)' }}
-                      onMouseEnter={e => { e.currentTarget.style.background = 'var(--accent-glow)'; e.currentTarget.style.color = 'var(--accent)'; e.currentTarget.style.borderColor = 'var(--accent)' }}
-                      onMouseLeave={e => { e.currentTarget.style.background = 'var(--surface2)'; e.currentTarget.style.color = 'var(--text2)'; e.currentTarget.style.borderColor = 'var(--border)' }}>
-                      {skill}
-                    </span>
-                  ))}
-                </div>
+          {(() => {
+            const featured = new Set(['LLMs', 'RAG', 'AI Agents', 'MCP', 'PyTorch', 'Transformers', 'LangChain', 'Computer Vision', 'NLP', 'FAISS', 'NumPy', 'Pandas', 'OpenCV', 'Deep Learning', 'Machine Learning'])
+            return (
+              <div className="grid sm:grid-cols-2 gap-2.5">
+                {Object.entries(skills).map(([category, items]) => (
+                  <div key={category} className="rounded-xl p-3.5"
+                    style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}>
+                    <h3 className="font-mono text-[9px] tracking-widest uppercase mb-2.5" style={{ color: 'var(--accent)' }}>
+                      {category}
+                    </h3>
+                    <div className="flex flex-wrap gap-1.5">
+                      {items.map(skill => {
+                        const isFeatured = featured.has(skill)
+                        return (
+                          <span key={skill}
+                            className="font-mono text-[10px] px-2 py-0.5 rounded-md transition-all cursor-default"
+                            style={isFeatured
+                              ? { background: 'var(--accent-glow)', color: 'var(--accent)', border: '1px solid color-mix(in srgb, var(--accent) 40%, transparent)', fontWeight: 600 }
+                              : { background: 'var(--surface2)', color: 'var(--text2)', border: '1px solid var(--border)' }}
+                            onMouseEnter={e => { e.currentTarget.style.background = 'var(--accent-glow)'; e.currentTarget.style.color = 'var(--accent)'; e.currentTarget.style.borderColor = 'color-mix(in srgb, var(--accent) 50%, transparent)' }}
+                            onMouseLeave={e => {
+                              if (isFeatured) {
+                                e.currentTarget.style.background = 'var(--accent-glow)'; e.currentTarget.style.color = 'var(--accent)'; e.currentTarget.style.borderColor = 'color-mix(in srgb, var(--accent) 40%, transparent)'
+                              } else {
+                                e.currentTarget.style.background = 'var(--surface2)'; e.currentTarget.style.color = 'var(--text2)'; e.currentTarget.style.borderColor = 'var(--border)'
+                              }
+                            }}>
+                            {skill}
+                          </span>
+                        )
+                      })}
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+            )
+          })()}
         </section>
 
         {/* ── Certifications ───────────────────────────── */}
         <section className="max-w-5xl mx-auto px-4 sm:px-6 pb-14 sm:pb-20">
           <SectionHeader index="04" title="Certifications" />
           <div className="flex flex-col sm:flex-row gap-3">
-            {certifications.map((cert, i) => (
-              <div key={i} className="rounded-xl p-4 flex-1"
-                style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}>
-                <div className="font-mono text-sm mb-1" style={{ color: 'var(--success)' }}>✓</div>
-                <div className="font-sans font-medium text-sm" style={{ color: 'var(--text)' }}>{cert.title}</div>
-                <div className="font-mono text-[11px] mt-1" style={{ color: 'var(--text3)' }}>{cert.issuer}</div>
-                {cert.score && <div className="font-mono text-[11px] mt-0.5" style={{ color: 'var(--highlight)' }}>Score: {cert.score}</div>}
-              </div>
-            ))}
+            {certifications.map((cert, i) => {
+              const inner = (
+                <>
+                  <div className="font-mono text-sm mb-1" style={{ color: 'var(--success)' }}>✓</div>
+                  <div className="font-sans font-medium text-sm" style={{ color: 'var(--text)' }}>{cert.title}</div>
+                  <div className="font-mono text-[11px] mt-1" style={{ color: 'var(--text3)' }}>{cert.issuer}</div>
+                  {cert.score && <div className="font-mono text-[11px] mt-0.5" style={{ color: 'var(--highlight)' }}>Score: {cert.score}</div>}
+                  {cert.link && (
+                    <div className="font-mono text-[9px] mt-2 flex items-center gap-1" style={{ color: 'var(--accent)' }}>
+                      <ExternalIcon size={8} /> View Certificate
+                    </div>
+                  )}
+                </>
+              )
+              return cert.link ? (
+                <a key={i} href={cert.link} target="_blank" rel="noopener noreferrer"
+                  className="rounded-xl p-4 flex-1 transition-all"
+                  style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}
+                  onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--accent)'}
+                  onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border)'}>
+                  {inner}
+                </a>
+              ) : (
+                <div key={i} className="rounded-xl p-4 flex-1"
+                  style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}>
+                  {inner}
+                </div>
+              )
+            })}
           </div>
         </section>
 
