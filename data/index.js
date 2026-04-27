@@ -7,7 +7,7 @@ export const profile = {
   ],
   phone: "+91-9344394424",
   linkedin: "https://www.linkedin.com/in/venkat-harish-g/",
-  github: "https://github.com/venkatharishga",
+  github: "https://github.com/Venkat-Harish",
   leetcode: "https://leetcode.com/u/RetryUntilPass/",
   avatar: "/images/avatar.jpg",
   summary: "AI Engineer building production ML systems — text-to-SQL pipelines, RAG document assistants, knowledge graphs, and computer vision at scale.",

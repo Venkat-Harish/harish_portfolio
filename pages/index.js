@@ -39,11 +39,27 @@ function FeatureList({ features }) {
   return (
     <div className="rounded-xl p-4 mb-4" style={{ background: 'var(--surface2)', border: '1px solid var(--border)' }}>
       <p className="font-mono text-[9px] tracking-widest mb-3" style={{ color: 'var(--accent)' }}>HOW IT WORKS</p>
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-2">
         {features.map((f, i) => (
-          <div key={i} className="flex gap-3 items-start">
-            <div className="flex-shrink-0 w-7 h-7 rounded-lg flex items-center justify-center text-sm"
-              style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}>
+          <div key={i}
+            className="flex gap-3 items-start p-2.5 rounded-lg cursor-default"
+            style={{ transition: 'background 0.18s ease, transform 0.18s ease, border-color 0.18s ease', border: '1px solid transparent' }}
+            onMouseEnter={e => {
+              e.currentTarget.style.background = 'var(--surface)'
+              e.currentTarget.style.transform = 'translateY(-2px)'
+              e.currentTarget.style.borderColor = 'color-mix(in srgb, var(--accent) 25%, transparent)'
+              e.currentTarget.querySelector('.feat-icon').style.borderColor = 'var(--accent)'
+              e.currentTarget.querySelector('.feat-icon').style.background = 'var(--accent-glow)'
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.background = 'transparent'
+              e.currentTarget.style.transform = 'translateY(0)'
+              e.currentTarget.style.borderColor = 'transparent'
+              e.currentTarget.querySelector('.feat-icon').style.borderColor = 'var(--border)'
+              e.currentTarget.querySelector('.feat-icon').style.background = 'var(--surface)'
+            }}>
+            <div className="feat-icon flex-shrink-0 w-7 h-7 rounded-lg flex items-center justify-center text-sm"
+              style={{ background: 'var(--surface)', border: '1px solid var(--border)', transition: 'background 0.18s ease, border-color 0.18s ease' }}>
               {f.icon}
             </div>
             <div className="flex-1 min-w-0">
