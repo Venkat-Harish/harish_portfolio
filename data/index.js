@@ -74,7 +74,7 @@ export const companies = [
     shortName: "Mercedes",
     role: "Machine Learning Intern",
     startDate: "2024-03-01",
-    endDate: "2024-08-31",
+    endDate: "2024-07-31",
     period: "Mar 2024 – Aug 2024",
     location: "Bengaluru",
     type: "Internship",
