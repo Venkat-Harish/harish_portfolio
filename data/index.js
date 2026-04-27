@@ -1,28 +1,36 @@
 export const profile = {
   name: "Venkata Harish G A",
   title: "AI Engineer",
-  email: "venkatharishg@gmail.com",
+  emails: [
+    { label: "Personal", address: "venkatharishg@gmail.com" },
+    { label: "Academic", address: "gh.ug20.cse@nitp.ac.in" }
+  ],
   phone: "+91-9344394424",
   linkedin: "https://www.linkedin.com/in/venkatharishga/",
   github: "https://github.com/venkatharishga",
   leetcode: "https://leetcode.com/venkatharishga/",
   avatar: "/images/avatar.jpg",
-  summary: "AI Engineer with 2+ years of experience building production ML systems — from text-to-SQL pipelines and RAG-based document assistants to 3D human pose estimation and log analysis chatbots.",
+  summary: "AI Engineer building production ML systems — text-to-SQL pipelines, RAG document assistants, knowledge graphs, and computer vision at scale.",
   education: {
     institute: "National Institute of Technology (NIT) Patna",
     degree: "B.Tech in Computer Science and Engineering",
+    startYear: 2020,
+    endYear: 2024,
     period: "July 2020 – May 2024",
     location: "Patna, Bihar",
     logo: "/images/nitp-logo.png"
   }
 }
 
+// Experience start dates for dynamic calculation
 export const companies = [
   {
     id: "tcs",
     name: "TATA Consultancy Services",
     shortName: "TCS",
     role: "AI Engineer",
+    startDate: "2024-08-01",
+    endDate: null, // null = present
     period: "Aug 2024 – Present",
     location: "India",
     type: "Full-time",
@@ -34,10 +42,12 @@ export const companies = [
     name: "Mercedes-Benz R&D India",
     shortName: "Mercedes",
     role: "Machine Learning Intern",
+    startDate: "2024-03-01",
+    endDate: "2024-08-31",
     period: "Mar 2024 – Aug 2024",
     location: "Bengaluru",
     type: "Internship",
-    color: "#C0C0C0",
+    color: "#A0A0B0",
     logo: "/images/mercedes-logo.png",
   },
   {
@@ -45,11 +55,13 @@ export const companies = [
     name: "TestAing Solutions",
     shortName: "TestAing",
     role: "Computer Vision Intern",
+    startDate: "2023-06-01",
+    endDate: "2023-07-31",
     period: "Jun 2023 – Jul 2023",
     location: "Bengaluru / Remote",
     type: "Internship",
-    color: "#7C9EFF",
-    logo: "https://www.testaing.com/favicon.svg",
+    color: "#B05BA0",
+    logo: "/images/testaing-logo.png",
   }
 ]
 
@@ -59,11 +71,13 @@ export const projects = [
     companyId: "tcs",
     title: "Query Suggestion System",
     chips: ["Trie", "Optimization", "Zero Backend"],
-    impact: "1000× faster",
-    description: "Engineered a Trie-based query suggestion system achieving 1000% faster response times (~1e-6s) and 100% GPU independence, replacing a FAISS+LLM setup with a lightweight frontend solution requiring zero backend calls.",
-    tags: ["Trie", "Python", "Frontend", "FAISS", "Optimization"],
+    impact: "1000× faster response",
+    description: "Replaced a FAISS+LLM-based suggestion system with a Trie-based frontend solution, cutting response time to ~1e-6s and achieving 100% GPU independence. Zero backend calls required.",
+    tags: ["Trie", "Python", "FAISS", "Optimization", "Frontend"],
+    features: [],
     github: null,
     liveUrl: null,
+    demoUrl: null,
     highlight: true
   },
   {
@@ -71,11 +85,13 @@ export const projects = [
     companyId: "tcs",
     title: "Text-to-SQL Optimization",
     chips: ["RAG", "FAISS", "SQL", "LLM"],
-    impact: "25% accuracy ↑",
-    description: "Enhanced a text-to-SQL pipeline by integrating FAISS-powered few-shot RAG prompting, achieving 25% higher accuracy and 40% faster SQL generation through optimized retrieval and LLM configuration tuning.",
+    impact: "25% accuracy ↑ · 40% faster",
+    description: "Enhanced a text-to-SQL pipeline with FAISS-powered few-shot RAG prompting. Improved accuracy by 25% and SQL generation speed by 40% via optimized retrieval and LLM config tuning.",
     tags: ["FAISS", "RAG", "LLM", "SQL", "Few-shot"],
+    features: [],
     github: null,
     liveUrl: null,
+    demoUrl: null,
     highlight: true
   },
   {
@@ -83,11 +99,13 @@ export const projects = [
     companyId: "tcs",
     title: "Log Analysis Chat Bot",
     chips: ["Chatbot", "LLM", "Contextual Memory"],
-    impact: "Faster ticket resolution",
-    description: "Session-aware chatbot that performs targeted retrieval of production logs and database audit trails. Applied error classification and contextual memory to automate root-cause explanation and reduce ticket resolution time.",
+    impact: "Reduced ticket resolution time",
+    description: "Session-aware chatbot for targeted retrieval of production logs and DB audit trails. Applied error classification and contextual memory to automate root-cause explanation.",
     tags: ["LLM", "RAG", "Contextual Memory", "Python"],
+    features: [],
     github: null,
     liveUrl: null,
+    demoUrl: null,
     highlight: false
   },
   {
@@ -95,11 +113,13 @@ export const projects = [
     companyId: "tcs",
     title: "Model Training & Fine-Tuning",
     chips: ["LoRA", "Fine-tuning", "PyTorch"],
-    impact: "Optimized inference",
-    description: "Employed advanced data extraction and generation methods to train and compare models across prompt size, response latency, and accuracy. Used LoRA for parameter-efficient fine-tuning and optimized batch sizing.",
+    impact: "Maximized inference quality",
+    description: "Trained and compared models across prompt size, latency, and accuracy dimensions. Used LoRA for parameter-efficient fine-tuning and optimized batch sizing for speed and quality.",
     tags: ["LoRA", "Fine-tuning", "PyTorch", "LLM", "Transformers"],
+    features: [],
     github: null,
     liveUrl: null,
+    demoUrl: null,
     highlight: false
   },
   {
@@ -107,11 +127,13 @@ export const projects = [
     companyId: "tcs",
     title: "RAG + Graph Document Assistant",
     chips: ["Knowledge Graph", "Neo4j", "RAG", "LangChain"],
-    impact: "Context-aware Q&A",
-    description: "Hybrid Graph + Vector DB pipeline using Neo4j and FAISS/LangChain. PDFs parsed into hierarchical entities (Main Heading → Subheading → Content) and stored in a knowledge graph. Enabled chat-based text-to-SQL interface for context-aware document Q&A.",
+    impact: "Context-aware document Q&A",
+    description: "Hybrid Graph + Vector DB pipeline using Neo4j and FAISS/LangChain. PDFs are parsed into hierarchical entities (Heading → Subheading → Content) stored as a knowledge graph. Cross-heading semantic relationships captured via graph edges. Chat-based text-to-SQL interface for intelligent Q&A.",
     tags: ["Neo4j", "FAISS", "LangChain", "Knowledge Graph", "RAG"],
+    features: [],
     github: null,
     liveUrl: null,
+    demoUrl: null,
     highlight: true
   },
   {
@@ -120,22 +142,26 @@ export const projects = [
     title: "IPO Assistant (Scraping + RAG + Graph)",
     chips: ["Web Scraping", "Knowledge Graph", "RAG"],
     impact: "Real-time IPO intelligence",
-    description: "Hybrid Graph and Vector DB pipeline combining web scraping, Neo4j and FAISS/LangChain. Parsed IPO data into hierarchical knowledge graphs, enabling a real-time chat interface for IPO Q&A.",
+    description: "Live IPO data pipeline combining web scraping, Neo4j graph DB, and FAISS/LangChain. Scraped data parsed into hierarchical knowledge graphs. Real-time chat interface for IPO Q&A.",
     tags: ["Web Scraping", "Neo4j", "LangChain", "RAG", "Python"],
+    features: [],
     github: null,
     liveUrl: null,
+    demoUrl: null,
     highlight: false
   },
   {
     id: "3d-pose-estimation",
     companyId: "mercedes",
     title: "3D Human Pose Estimation Benchmarking",
-    chips: ["Computer Vision", "3D Pose", "PyTorch", "Docker"],
+    chips: ["Computer Vision", "3D Pose", "PyTorch"],
     impact: "4% keypoint accuracy ↑",
-    description: "Benchmarked DL models on custom datasets with occlusion. Compared multiple 3D Human Pose Estimation models using Autocorrelation, Frequency, Inference Time, Euclidean Distance, and Qualitative Analysis metrics. Improved future pose keypoint predictions by 4% via correlation of previous keypoints.",
+    description: "Benchmarked multiple DL models on custom occluded datasets. Compared models using Autocorrelation, Frequency, Inference Time, Euclidean Distance, and Qualitative Analysis. Improved future keypoint predictions by 4% using correlation from previously generated keypoints.",
     tags: ["PyTorch", "Computer Vision", "3D Pose Estimation", "Docker", "Python"],
+    features: [],
     github: null,
     liveUrl: null,
+    demoUrl: null,
     highlight: true
   },
   {
@@ -143,23 +169,33 @@ export const projects = [
     companyId: "testaing",
     title: "Object Detection Model Training",
     chips: ["YOLO", "Faster R-CNN", "Computer Vision"],
-    impact: "Custom dataset pipeline",
-    description: "Trained and fine-tuned YOLO and Faster R-CNN models on custom datasets for real-world object detection tasks. Handled end-to-end pipeline: data annotation, dataset curation, training, and model evaluation.",
-    tags: ["YOLO", "Faster R-CNN", "PyTorch", "Data Annotation", "Computer Vision"],
+    impact: "End-to-end custom pipeline",
+    description: "Trained YOLO and Faster R-CNN on custom annotated datasets. Handled full pipeline: data annotation, dataset curation, training, evaluation.",
+    tags: ["YOLO", "Faster R-CNN", "PyTorch", "Data Annotation"],
+    features: [],
     github: null,
     liveUrl: null,
+    demoUrl: null,
     highlight: false
   },
   {
     id: "stock-news",
     companyId: null,
     title: "Stock News Summarizer",
-    chips: ["NLP", "Sentiment Analysis", "Django"],
-    impact: "NSE full coverage",
-    description: "Summarizes news related to any NSE-listed stock. Uses Django backend with Newspaper3k for scraping, text summarization, and sentiment analysis to deliver a quick sentiment snapshot for any ticker.",
-    tags: ["Django", "Python", "NLP", "Sentiment Analysis", "Newspaper3k"],
+    chips: ["NLP", "Sentiment Analysis", "Django", "Web Scraping"],
+    impact: "Full NSE coverage · Real-time sentiment",
+    description: "An end-to-end stock news intelligence tool for any NSE-listed stock.",
+    features: [
+      { icon: "🔍", label: "News Discovery", detail: "Scrapes the web for all recent news articles related to the entered stock ticker from multiple sources simultaneously." },
+      { icon: "🧹", label: "Article Cleaning", detail: "Strips boilerplate, ads, and irrelevant content — extracts only the core journalistic body of each article using Newspaper3k." },
+      { icon: "📝", label: "Per-Article Summarization", detail: "Summarizes each cleaned article independently into a concise 2-3 sentence takeaway, so you can scan dozens of articles in seconds." },
+      { icon: "📊", label: "Per-Article Sentiment", detail: "Runs sentiment analysis on each article individually — outputs Positive / Negative / Neutral with a confidence score." },
+      { icon: "🎯", label: "Overall Sentiment Rating", detail: "Aggregates all per-article sentiments into a single weighted overall sentiment score and rating for the stock." }
+    ],
+    tags: ["Django", "Python", "NLP", "Newspaper3k", "Sentiment Analysis", "Beautiful Soup"],
     github: "https://github.com/venkatharishga/stock-news-summarizer",
     liveUrl: null,
+    demoUrl: null, // add a YouTube/video URL here e.g. "https://youtu.be/xxxxx"
     highlight: true,
     isPersonal: true
   }
@@ -177,11 +213,4 @@ export const skills = {
 export const certifications = [
   { title: "Machine Learning Specialization", issuer: "Stanford Online / Coursera", link: null },
   { title: "Joy of Computing using Python", issuer: "NPTEL", score: "84/100", link: null }
-]
-
-export const stats = [
-  { label: "LeetCode Problems", value: "700+", sub: "Max rating 1806" },
-  { label: "Experience", value: "2+", sub: "Years" },
-  { label: "Projects at TCS", value: "6", sub: "Production systems" },
-  { label: "NIT Patna", value: "CSE", sub: "B.Tech Graduate" }
 ]

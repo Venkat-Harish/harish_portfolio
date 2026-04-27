@@ -1,45 +1,104 @@
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=DM+Sans:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-* {
-  box-sizing: border-box;
+/* ── CSS Variables ───────────────────────────────────────── */
+:root {
+  /* DARK MODE (default) */
+  --bg:           #0D0F14;
+  --bg2:          #13161D;
+  --surface:      #181B24;
+  --surface2:     #1E2230;
+  --border:       #252A38;
+  --border2:      #2E3448;
+
+  /* Accent: electric violet-blue — high attention, trustworthy, techy */
+  --accent:       #7B61FF;
+  --accent-hover: #9B85FF;
+  --accent-glow:  rgba(123,97,255,0.18);
+
+  /* Secondary: amber/gold — warmth, highlights, impact numbers */
+  --highlight:    #F5A623;
+  --highlight-bg: rgba(245,166,35,0.12);
+
+  /* Success green — positive impacts */
+  --success:      #34D399;
+  --success-bg:   rgba(52,211,153,0.10);
+
+  /* Text */
+  --text:         #F0F2F8;
+  --text2:        #A0A8C0;
+  --text3:        #606880;
+
+  /* Popup/modal */
+  --modal-bg:     rgba(8,9,14,0.88);
+
+  color-scheme: dark;
 }
 
-html {
-  scroll-behavior: smooth;
+.light {
+  --bg:           #F7F8FC;
+  --bg2:          #EEF0F8;
+  --surface:      #FFFFFF;
+  --surface2:     #F0F2FA;
+  --border:       #DDE1EE;
+  --border2:      #C8CDE0;
+
+  --accent:       #5B3FE8;
+  --accent-hover: #4430C8;
+  --accent-glow:  rgba(91,63,232,0.12);
+
+  --highlight:    #D4830A;
+  --highlight-bg: rgba(212,131,10,0.10);
+
+  --success:      #059669;
+  --success-bg:   rgba(5,150,105,0.10);
+
+  --text:         #14172B;
+  --text2:        #4A5170;
+  --text3:        #9299B0;
+
+  --modal-bg:     rgba(240,242,252,0.90);
+
+  color-scheme: light;
 }
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
 
 body {
-  background-color: #0A0A0A;
-  color: #E8E8E8;
+  background-color: var(--bg);
+  color: var(--text);
   font-family: 'DM Sans', sans-serif;
+  transition: background-color 0.3s, color 0.3s;
 }
 
-::selection {
-  background: #00FF85;
-  color: #0A0A0A;
+::selection { background: var(--accent); color: #fff; }
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+
+/* Utility classes using CSS vars */
+.bg-theme       { background-color: var(--bg); }
+.bg-surface     { background-color: var(--surface); }
+.bg-surface2    { background-color: var(--surface2); }
+.border-theme   { border-color: var(--border); }
+.border-theme2  { border-color: var(--border2); }
+.text-primary   { color: var(--text); }
+.text-secondary { color: var(--text2); }
+.text-muted     { color: var(--text3); }
+.text-accent    { color: var(--accent); }
+.text-highlight { color: var(--highlight); }
+.text-success   { color: var(--success); }
+
+.blink { animation: blink 1s step-end infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+.fade-up { animation: fadeUp 0.5s ease forwards; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:none} }
+
+.glow-ring {
+  box-shadow: 0 0 0 3px var(--accent-glow), 0 0 20px var(--accent-glow);
 }
-
-::-webkit-scrollbar {
-  width: 4px;
-}
-
-::-webkit-scrollbar-track {
-  background: #0A0A0A;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #00FF85;
-  border-radius: 2px;
-}
-
-.animate-delay-1 { animation-delay: 0.1s; }
-.animate-delay-2 { animation-delay: 0.2s; }
-.animate-delay-3 { animation-delay: 0.3s; }
-.animate-delay-4 { animation-delay: 0.4s; }
-.animate-delay-5 { animation-delay: 0.5s; }
-.animate-delay-6 { animation-delay: 0.6s; }
-
-.opacity-0 { opacity: 0; }
