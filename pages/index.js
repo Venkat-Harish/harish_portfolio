@@ -9,7 +9,7 @@ function calcDuration(startDate, endDate) {
   const end = endDate ? new Date(endDate) : new Date()
   let months = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth())
   if (months < 1) months = 1
-  const years = Math.floor(months / 12)
+  const years = Math.ceil(months / 12)
   const rem = months % 12
   if (years === 0) return `${rem} month${rem !== 1 ? 's' : ''}`
   if (rem === 0) return `${years} year${years !== 1 ? 's' : ''}`
